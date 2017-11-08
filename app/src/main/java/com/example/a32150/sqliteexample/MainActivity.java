@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
     TextView tv;
     private ListView lv;
     private ArrayAdapter<String> adapter;
-    private ArrayList<String> mylist;
+    private ArrayList<Phone> mylist;
+    private ArrayList<String> showList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +36,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         lv = (ListView) findViewById(R.id.listView);
         mylist = new ArrayList<>();
+        showList = new ArrayList<>();
         DBInfo.DB_FILE = getFilesDir() + File.separator + "mydata.sqlite";
         copyDBFile();
         getData();
-        adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, mylist);
+        adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, showList);
         lv.setAdapter(adapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent it = new Intent(MainActivity.this, DetailActivity.class);
+                it.putExtra("id", mylist.get(i).id);
+                startActivity(it);
+            }
+        });
+
     }
 
     void getData()  {
@@ -48,14 +60,17 @@ public class MainActivity extends AppCompatActivity {
         if (c.moveToFirst())
         {
             do {
-                mylist.add(c.getString(0) + " - " + c.getString(1) + " - " + c.getString(2)+" - " + c.getString(3));
+                showList.add(""+c.getInt(0)+" . "+c.getString(1)+" "+c.getString(2)+" "+c.getString(3));
+                mylist.add(new Phone(c.getInt(0), c.getString(1), c.getString(2), c.getString(3)));
             } while (c.moveToNext());
         }
     }
 
+
     @Override
     protected void onResume() {
         mylist.clear();
+        showList.clear();
         getData();
         adapter.notifyDataSetChanged();
         super.onResume();

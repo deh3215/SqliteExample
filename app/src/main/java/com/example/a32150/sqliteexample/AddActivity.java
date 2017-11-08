@@ -25,6 +25,7 @@ public class AddActivity extends AppCompatActivity {
         String address = ed3.getText().toString();
         //String str = "Insert Into phone (username, tel) values ('" + username + "', '" + tel + "')";
         String str = "Insert Into Students (name, phone, address) values ('" + username + "', '" + phone + "', '" + address + "')";
+        //String str = "DELETE FROM Students WHERE id = '1'";
         db.execSQL(str);
 
         finish();
