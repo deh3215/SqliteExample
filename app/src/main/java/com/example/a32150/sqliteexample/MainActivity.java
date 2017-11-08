@@ -1,5 +1,6 @@
 package com.example.a32150.sqliteexample;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
@@ -33,9 +34,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         lv = (ListView) findViewById(R.id.listView);
         mylist = new ArrayList<>();
-        DB_FILE = getFilesDir() + File.separator + "mydata.sqlite";
+        DBInfo.DB_FILE = getFilesDir() + File.separator + "mydata.sqlite";
         copyDBFile();
-        SQLiteDatabase db = SQLiteDatabase.openDatabase(DB_FILE, null, SQLiteDatabase.OPEN_READWRITE);
+        getData();
+        adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, mylist);
+        lv.setAdapter(adapter);
+    }
+
+    void getData()  {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(DBInfo.DB_FILE, null, SQLiteDatabase.OPEN_READWRITE);
         //Cursor c = db.rawQuery("Select * from Students", null);
         Cursor c = db.query("Students", new String[] {"id", "name", "phone", "address"}, null,null,null,null,null);
         if (c.moveToFirst())
@@ -44,10 +51,17 @@ public class MainActivity extends AppCompatActivity {
                 mylist.add(c.getString(0) + " - " + c.getString(1) + " - " + c.getString(2)+" - " + c.getString(3));
             } while (c.moveToNext());
         }
-        adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, mylist);
-        lv.setAdapter(adapter);
     }
-//http://android-deve.blogspot.tw/2012/12/sqlite.html    SQLite教學網頁
+
+    @Override
+    protected void onResume() {
+        mylist.clear();
+        getData();
+        adapter.notifyDataSetChanged();
+        super.onResume();
+    }
+
+    //http://android-deve.blogspot.tw/2012/12/sqlite.html    SQLite教學網頁
 
 
     @Override
@@ -59,8 +73,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menu_add)   {
+            Intent it = new Intent(MainActivity.this, AddActivity.class);
+            //it.putExtra("name", )
 
 
+            startActivity(it);
 
 
         }
@@ -70,11 +87,11 @@ public class MainActivity extends AppCompatActivity {
     public void copyDBFile()
     {
         try {
-            File f = new File(DB_FILE);
+            File f = new File(DBInfo.DB_FILE);
             if (! f.exists())
             {
                 InputStream is = getResources().openRawResource(R.raw.mydata);
-                OutputStream os = new FileOutputStream(DB_FILE);
+                OutputStream os = new FileOutputStream(DBInfo.DB_FILE);
                 int read;
                 while ((read = is.read()) != -1)
                 {
