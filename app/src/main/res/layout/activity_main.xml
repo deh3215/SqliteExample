@@ -20,11 +20,20 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:layout_marginLeft="201dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="26dp"
         android:onClick="OnClick"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="32dp"
-        android:layout_marginLeft="27dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:text="Button"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="371dp"
+        android:layout_height="469dp"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp" />
 
 </android.support.constraint.ConstraintLayout>
